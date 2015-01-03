@@ -29,8 +29,11 @@ def googleTimes():
 
 def FOOorgTimes():
     routeres = {}
-    routelist = [['984','301']]
+    routelist = [['800','301'],['800','278']]
+    mappings ={'800':'92 and 880','301':'101 and GAP','278':'101 and 85'}
     baapikey = "30d1bbd8-a444-4d3d-9b8f-7d81b39ea6a1"
+    ignorelist = ["I-880 S, I-280 N, CA-85 N",
+                  "I-880 S, I-880 S-CA-237 W Ramp, CA-237 W, CA-237 W-US-101 N Ramp, US-101 N"]
     for each in routelist:
         onode = each[0]
         dnode = each[1]
@@ -46,10 +49,13 @@ def FOOorgTimes():
                 obstructions = len(path[4])
             else:
                 obstructions = 0
-            routeres[summary] = {'currentTravelTime':str(datetime.timedelta(minutes=float(tree[0][0].text))),
-                                 'typicalTravelTime':str(datetime.timedelta(minutes=float(tree[0][1].text))),
-                                 'miles':str(tree[0][2].text),
-                                 'obstructions':obstructions}
+            if summary not in ignorelist:
+                routeres[summary] = {'origin':mappings[onode],
+                                     'destination':mappings[dnode],
+                                     'currentTravelTime':str(datetime.timedelta(minutes=float(tree[0][0].text))),
+                                     'typicalTravelTime':str(datetime.timedelta(minutes=float(tree[0][1].text))),
+                                     'miles':str(tree[0][2].text),
+                                     'obstructions':obstructions}
     return routeres
 
 def csvwriter(results):
@@ -59,6 +65,8 @@ def csvwriter(results):
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for each in results['511']:
             writer.writerow([results['timestamp']]+
+                            [results['511'][each]['origin']]+
+                            [results['511'][each]['destination']]+
                             [each]+
                             [results['511'][each]['currentTravelTime']]+
                             [results['511'][each]['typicalTravelTime']]+
