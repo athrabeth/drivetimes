@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser(description="")
 parser.add_argument('-o','--origin',default="25507+Del+Mar+Ave,+Hayward,+CA+94542")
 args = parser.parse_args()
 
+dt = datetime.datetime.now()
 
 def googleTimes():
     #origin = args.origin.replace(" ","+")
@@ -29,8 +30,11 @@ def googleTimes():
 
 def FOOorgTimes():
     routeres = {}
-    routelist = [['800','301'],['800','278']]
-    mappings ={'800':'92 and 880','301':'101 and GAP','278':'101 and 85'}
+    if dt.hour < 12:
+        routelist = [['800','301'],['800','278']]
+    else:
+        routelist = [['301','800'],['278','800']]
+    mappings ={'800':'Hayward','301':'Work','278':'Work+Five Minutes'}
     baapikey = "30d1bbd8-a444-4d3d-9b8f-7d81b39ea6a1"
     ignorelist = ["I-880 S, I-280 N, CA-85 N",
                   "I-880 S, I-880 S-CA-237 W Ramp, CA-237 W, CA-237 W-US-101 N Ramp, US-101 N"]
@@ -60,7 +64,7 @@ def FOOorgTimes():
 
 def csvwriter(results):
     import csv
-    with open('drivetimes.csv', 'a') as csvfile:
+    with open('/home/jude/repo/drivetimes/drivetimes.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for each in results['511']:
