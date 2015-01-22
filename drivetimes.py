@@ -56,8 +56,8 @@ def FOOorgTimes():
             if summary not in ignorelist:
                 routeres[summary] = {'origin':mappings[onode],
                                      'destination':mappings[dnode],
-                                     'currentTravelTime':str(datetime.timedelta(minutes=float(tree[0][0].text))),
-                                     'typicalTravelTime':str(datetime.timedelta(minutes=float(tree[0][1].text))),
+                                     'currentTravelTime':str(tree[0][0].text),
+                                     'typicalTravelTime':str(tree[0][1].text),
                                      'miles':str(tree[0][2].text),
                                      'obstructions':obstructions}
     return routeres
